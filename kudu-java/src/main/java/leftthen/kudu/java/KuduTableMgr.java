@@ -4,11 +4,24 @@ import org.apache.kudu.ColumnSchema;
 import org.apache.kudu.Schema;
 import org.apache.kudu.Type;
 import org.apache.kudu.client.CreateTableOptions;
+import org.apache.kudu.client.KuduClient;
+import org.apache.kudu.client.KuduException;
 import org.apache.kudu.shaded.com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
 
 public class KuduTableMgr {
+    public static void main(String[] args) throws KuduException {
+        KuduClient client = KuduClientUtils.getDefaultKuduClient();
+        String tableName = "user";
+
+        System.out.println(" table " + tableName + " exists : " + client.tableExists(tableName));
+        client.createTable(tableName, getBasicSchema(), getBasicCreateTableOptions());
+
+        System.out.println(" table " + tableName + " exists : " + client.tableExists(tableName));
+//        client.alterTable()
+
+    }
 
     public static Schema getBasicSchema() {
         ArrayList<ColumnSchema> columns = new ArrayList<ColumnSchema>(5);
@@ -26,6 +39,6 @@ public class KuduTableMgr {
     }
 
     public static CreateTableOptions getBasicCreateTableOptions() {
-        return new CreateTableOptions().setRangePartitionColumns(ImmutableList.of("key"));
+        return new CreateTableOptions().setRangePartitionColumns(ImmutableList.of("key")).setNumReplicas(1);
     }
 }
