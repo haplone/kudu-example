@@ -9,6 +9,7 @@ import org.apache.kudu.client.KuduException;
 import org.apache.kudu.shaded.com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class KuduTableMgr {
     public static void main(String[] args) throws KuduException {
@@ -16,11 +17,12 @@ public class KuduTableMgr {
         String tableName = "user";
 
         System.out.println(" table " + tableName + " exists : " + client.tableExists(tableName));
-        client.createTable(tableName, getBasicSchema(), getBasicCreateTableOptions());
+        client.createTable(tableName, getSchemaWithAllTypes(), getBasicCreateTableOptions());
 
         System.out.println(" table " + tableName + " exists : " + client.tableExists(tableName));
 //        client.alterTable()
-
+        client.deleteTable(tableName);
+        System.out.println(" table " + tableName + " exists : " + client.tableExists(tableName));
     }
 
     public static Schema getBasicSchema() {
@@ -38,7 +40,26 @@ public class KuduTableMgr {
         return new Schema(columns);
     }
 
+    public static Schema getSchemaWithAllTypes() {
+        List<ColumnSchema> columns =
+                ImmutableList.of(
+                        new ColumnSchema.ColumnSchemaBuilder("int8", Type.INT8).key(true).build(),
+                        new ColumnSchema.ColumnSchemaBuilder("int16", Type.INT16).build(),
+                        new ColumnSchema.ColumnSchemaBuilder("int32", Type.INT32).build(),
+                        new ColumnSchema.ColumnSchemaBuilder("int64", Type.INT64).build(),
+                        new ColumnSchema.ColumnSchemaBuilder("bool", Type.BOOL).build(),
+                        new ColumnSchema.ColumnSchemaBuilder("float", Type.FLOAT).build(),
+                        new ColumnSchema.ColumnSchemaBuilder("double", Type.DOUBLE).build(),
+                        new ColumnSchema.ColumnSchemaBuilder("string", Type.STRING).build(),
+                        new ColumnSchema.ColumnSchemaBuilder("binary-array", Type.BINARY).build(),
+                        new ColumnSchema.ColumnSchemaBuilder("binary-bytebuffer", Type.BINARY).build(),
+                        new ColumnSchema.ColumnSchemaBuilder("null", Type.STRING).nullable(true).build(),
+                        new ColumnSchema.ColumnSchemaBuilder("timestamp", Type.UNIXTIME_MICROS).build());
+
+        return new Schema(columns);
+    }
+
     public static CreateTableOptions getBasicCreateTableOptions() {
-        return new CreateTableOptions().setRangePartitionColumns(ImmutableList.of("key")).setNumReplicas(1);
+        return new CreateTableOptions().setRangePartitionColumns(ImmutableList.of("int8")).setNumReplicas(1);
     }
 }
