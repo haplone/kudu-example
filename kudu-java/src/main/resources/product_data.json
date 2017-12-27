@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "incomeRate": 0.06,
+    "effectiveTime": 345,
+    "memo": "鼠",
+    "productType": 1,
+    "interest": 0.05,
+    "updateTime": 23
+  },
+  {
+    "id": 2,
+    "incomeRate": 0.06,
+    "effectiveTime": 345,
+    "memo": "牛",
+    "productType": 2,
+    "interest": 0.05,
+    "updateTime": 23
+  }
+]
